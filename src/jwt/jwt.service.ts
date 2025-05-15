@@ -1,11 +1,11 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { sign, verify } from 'jsonwebtoken';
+import { Secret, sign, SignOptions, verify } from 'jsonwebtoken';
 import * as dayjs from 'dayjs';
 import { Payload } from 'src/interfaces/payload';
 @Injectable()
 export class JwtService {
   // config.ts
-  config = {
+  config :Record<string,SignOptions&{secret:string}>= {
     auth: {
       secret: 'authSecret',
       expiresIn: '15m',
@@ -21,7 +21,7 @@ export class JwtService {
   ): string {
     return sign(payload, this.config[type].secret, {
       expiresIn: this.config[type].expiresIn,
-    });
+    })
   }
 
   refreshToken(refreshToken: string):{accessToken:string,refreshToken:string} {
@@ -42,6 +42,6 @@ export class JwtService {
   }
 
   getPayload(token: string, type: 'refresh' | 'auth' = 'auth'): Payload {
-    return verify(token, this.config[type].secret);
+    return verify(token, this.config[type].secret as Secret) as Payload;
   }
 }

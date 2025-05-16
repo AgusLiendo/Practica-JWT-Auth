@@ -19,9 +19,8 @@ export class UserEntity extends BaseEntity implements UserI {
   rol: RolEntity;
 
   get permissionCodes() {
-    return this.rol.permisos.map(permiso => permiso.code);
-  }
- 
+  return this.rol?.permisos?.map(permiso => permiso.code) || [];
+}
 
 
 }

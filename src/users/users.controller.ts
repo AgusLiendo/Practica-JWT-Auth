@@ -23,6 +23,7 @@ export class UsersController {
   me(@Req() req: RequestWithUser) {
     return {
       email: req.user.email,
+      role: req.user.rol,
     };
   }
 

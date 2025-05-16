@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm';
 import { RolEntity } from './rol.entity';
 
 @Entity()
@@ -6,10 +6,13 @@ export class Permiso {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  nombre: string;
+  @Column({ unique: true })
+  code: string;
 
-  @ManyToOne(() => RolEntity, rol => rol.permisos)
-  rol: RolEntity;
+  @Column()
+  name: string;
+
+  @ManyToMany(() => RolEntity, rol => rol.permisos)
+  rol: RolEntity[];
 }
 

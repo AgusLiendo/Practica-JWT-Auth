@@ -1,5 +1,4 @@
-export class RolRegisterDTO {
+export class PermissionRegisterDTO {
     code: string;
     name: string;
-    permissions: string[];
 }

@@ -1,5 +1,5 @@
 export class RolRegisterDTO {
-    code: string;
-    name: string;
-    permissions: string[];
+    name:string;
+    code:string;
+    permissions: number[];
 }

@@ -1,5 +1,5 @@
 import { UserI } from '../interfaces/user.interface';
-import { BaseEntity, Column, Entity, Index, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { BaseEntity, Column, Entity, Index, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { RolEntity } from "./rol.entity"
 
 @Entity('users')
@@ -15,9 +15,13 @@ export class UserEntity extends BaseEntity implements UserI {
   password: string;
 
   @ManyToOne(() => RolEntity, rol => rol.id)
+  @JoinColumn({ name: 'rolId' })
   rol: RolEntity;
 
   get permissionCodes() {
-    return ['create-users', 'list-products'];
+    return this.rol.permisos.map(permiso => permiso.code);
   }
+ 
+
+
 }

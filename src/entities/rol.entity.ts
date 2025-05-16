@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, Index, PrimaryGeneratedColumn, OneToMany} from 'typeorm';
+import { BaseEntity, Column, Entity, Index, PrimaryGeneratedColumn, OneToMany, ManyToMany, JoinTable} from 'typeorm';
 import { Permiso } from "./permission.entity"
 import { UserEntity } from './user.entity';
 
@@ -13,9 +13,11 @@ export class RolEntity extends BaseEntity {
     @Column()
     name: string;
 
-    @OneToMany(() => Permiso, permiso => permiso.rol, {cascade: true})
+    @ManyToMany(() => Permiso, permiso => permiso.rol, {cascade: true})
+    @JoinTable({name: 'rol_permisos', joinColumn: {name: 'rolId', referencedColumnName: 'id'}, inverseJoinColumn: {name: 'permisoId', referencedColumnName: 'id'}})  
     permisos: Permiso[];
 
     @OneToMany(() => UserEntity, user => user.rol, {cascade: true})
     user: UserEntity[];
 }
+

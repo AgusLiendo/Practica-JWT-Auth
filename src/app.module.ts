@@ -10,18 +10,43 @@ import { RoleService } from './role/role.service';
 import { RoleController } from './role/role.controller';
 import { PermissionService } from './permission/permission.service';
 import { PermissionController } from './permission/permission.controller';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { PermissionModule } from './permission/permission.module';
+import { RoleModule } from './role/role.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forRoot({
-      database: 'db.sql',
-      entities,
-      type: 'sqlite',
+  imports: [ConfigModule.forRoot({
+    isGlobal: true,
+  }),
+
+    TypeOrmModule.forRootAsync({
+    imports: [ConfigModule],
+    inject: [ConfigService],
+    useFactory: (configService: ConfigService) => ({
+      type: 'postgres',
+      host: configService.get('DB_HOST'),
+      port: +configService.get('DB_PORT'),
+      username: configService.get('DB_USERNAME'),
+      password: configService.get('DB_PASSWORD'),
+      database: configService.get('DB_DATABASE'),
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
+      ssl: configService.get('DB_SSL') === 'true' 
+      ? { rejectUnauthorized: false }  // Azure acepta esto
+      : false,
     }),
-    TypeOrmModule.forFeature(entities),
+  }),
+
+  TypeOrmModule.forFeature(entities),
+
+  PermissionModule,
+
+  RoleModule,
+  
   ],
   controllers: [AppController,UsersController, RoleController, PermissionController],
   providers: [AuthGuard, JwtService, UsersService, RoleService, PermissionService],
 })
 export class AppModule {}
+
+
